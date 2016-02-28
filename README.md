@@ -8,4 +8,8 @@ Stardew  Valley Movement Speed Mod
 ##Download the latest release here https://github.com/kevinmurphy678/Stawdew_Injector/releases 
 
 
+Bugs:
 
+* repo name misspelled(this is what happens when you rush)
+* Steam overlay may not work
+* May not work with some antiviruses
