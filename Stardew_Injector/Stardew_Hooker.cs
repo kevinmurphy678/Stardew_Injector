@@ -228,8 +228,10 @@ namespace Stardew_Injector
             var firstInstruction = ilProcessor.Body.Instructions.First();
             var lastInstruction = ilProcessor.Body.Instructions[ilProcessor.Body.Instructions.Count - 1];
 
-            ilProcessor.Replace(ilProcessor.Body.Instructions[19], ilProcessor.Create(OpCodes.Ldc_I4_4));
-            Console.WriteLine("Replaced line 19 with opcode ldc.i4.4, removing diagonal movement check");
+
+            //CAN CHANGE WHEN GAME IS UPDATED....MIGHT BREAK DURING NEXT UPDATE
+            ilProcessor.Replace(ilProcessor.Body.Instructions[23], ilProcessor.Create(OpCodes.Ldc_I4_4));
+            Console.WriteLine("Replaced line 23 with opcode ldc.i4.4, removing diagonal movement check");
 
             string text = System.IO.File.ReadAllText(@"movementSpeed.txt");
             int speed = Int32.Parse(text);
@@ -247,6 +249,10 @@ namespace Stardew_Injector
 
             for (int i = 0; i < ilProcessor.Body.Instructions.Count; i++)
                 Console.WriteLine(i + ":" + ilProcessor.Body.Instructions[i]);
+
+          
+
+
 
         }
 
