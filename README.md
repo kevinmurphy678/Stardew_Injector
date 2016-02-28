@@ -11,5 +11,5 @@ Stardew  Valley Movement Speed Mod
 Bugs:
 
 * repo name misspelled(this is what happens when you rush)
-* Steam overlay may not work
+* Steam overlay may not work(Working on a fix for this)
 * May not work with some antiviruses
