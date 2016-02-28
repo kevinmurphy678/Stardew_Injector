@@ -219,11 +219,28 @@ namespace Stardew_Injector
 
   */
 
-            //Farmer movement speed
-
             InjectMovementSpeed();
             InjectClockScale();
+            InjectEasyFishing();
+        }
 
+        private void InjectEasyFishing()
+        {
+            MethodDefinition movementSpeedMethod = GetMethodDefinition(GetTypeDefinition("BobberBar"), "update");
+            //DumpInstructionsToFile(movementSpeedMethod);
+
+            var ilProcessor = movementSpeedMethod.Body.GetILProcessor();
+            var firstInstruction = ilProcessor.Body.Instructions.First();
+            var lastInstruction = ilProcessor.Body.Instructions[ilProcessor.Body.Instructions.Count - 1];
+
+            ilProcessor.Replace(ilProcessor.Body.Instructions[907], ilProcessor.Create(OpCodes.Ldc_R4, 0.001f));
+            Console.WriteLine("Replaced line 907 with opcode ldc.r4 with a value of 0.001, Slows down fish escape for all bobbers");
+
+            ilProcessor.Replace(ilProcessor.Body.Instructions[909], ilProcessor.Create(OpCodes.Ldc_R4, 0.001f));
+            Console.WriteLine("Replaced line 909 with opcode ldc.r4 with a value of 0.001, Slows down fish escape for bobber id: 694");
+
+            for (int i = 0; i < ilProcessor.Body.Instructions.Count; i++)
+                Console.WriteLine(i + ":" + ilProcessor.Body.Instructions[i]);
         }
 
         private void InjectClockScale()
@@ -276,6 +293,19 @@ namespace Stardew_Injector
 
             for (int i = 0; i < ilProcessor.Body.Instructions.Count; i++)
                 Console.WriteLine(i + ":" + ilProcessor.Body.Instructions[i]);
+        }
+
+        private void DumpInstructionsToFile(MethodDefinition methodDefinition)
+        {
+            var fileName = string.Format("{0}.{1}.txt", methodDefinition.DeclaringType.Name, methodDefinition.Name);
+
+            using (var stream = File.OpenWrite(Path.Combine(".", fileName)))
+                using(var writer = new StreamWriter(stream))
+            {
+                var ilProcessor = methodDefinition.Body.GetILProcessor();
+                for (int i = 0; i < ilProcessor.Body.Instructions.Count; i++)
+                    writer.WriteLine((i) + ":" + ilProcessor.Body.Instructions[i]);
+            }
         }
     }
 }
