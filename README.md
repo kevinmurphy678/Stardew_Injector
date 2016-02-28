@@ -5,6 +5,7 @@ Stardew  Valley Movement Speed Mod
 
 -Increases movement speed (editable by movementSpeed.txt). Default value is 1(This adds 1 to the default movement speed)
 
+## Patch 1.02 requires an update of the mod or the game will crash! Please update to the latest release
 ##Download the latest release here https://github.com/kevinmurphy678/Stawdew_Injector/releases 
 
 Bugs:
