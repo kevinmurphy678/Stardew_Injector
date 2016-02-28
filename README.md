@@ -7,3 +7,6 @@ Stardew  Valley Movement Speed Mod
 
 
 Download the latest release here https://github.com/kevinmurphy678/Stawdew_Injector/releases
+
+
+Accidently the repo it Stawdew_Injector...woops
