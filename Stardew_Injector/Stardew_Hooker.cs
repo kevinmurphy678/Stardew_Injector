@@ -240,32 +240,11 @@ namespace Stardew_Injector
 
             if (!enabled) return;
 
-            MethodDefinition movementSpeedMethod = GetMethodDefinition(GetTypeDefinition("GameLocation"), "performTenMinuteUpdate");
-           // DumpInstructionsToFile(movementSpeedMethod);
-            var ilProcessor = movementSpeedMethod.Body.GetILProcessor();
-            bool changed = false;
-            for (int i = 0; i < ilProcessor.Body.Instructions.Count; i++)
-            {
-                var instruction = ilProcessor.Body.Instructions[i];
-                if(instruction.ToString().ToLower().Contains("nextdouble"))
-                {
-                    var start = ilProcessor.Body.Instructions.Skip(i);
-                    var end = start.Take(5);
-                    if(end.Any(ins => ins.ToString().ToLower().Contains("stardewvalley.farm")))
-                    {
-                        changed = true;
-                        ilProcessor.Replace(ilProcessor.Body.Instructions[i+1], ilProcessor.Create(OpCodes.Ldc_R8, 1.1));
-                        Console.WriteLine("Replacing line {0} with ldc.r8 1.1, forces each area to have a fishing bubble area", i + 1);
-                        break;
-                    }
-                }
-            }
-            if(!changed)
-            {
-                Console.WriteLine("Couldn't find il to change for fishing bubbles.");
-            }
-            for (int i = 0; i < ilProcessor.Body.Instructions.Count; i++)
-                Console.WriteLine(i + ":" + ilProcessor.Body.Instructions[i]);
+            this.m_vModDefinition.FindMethod("StardewValley.GameLocation::performTenMinuteUpdate")
+                .FindLoadField("currentLocation").Next(i => i.ToString().Contains("NextDouble")).Next()
+                    .ReplaceCreate(OpCodes.Ldc_R8, 1.1);
+
+            Console.WriteLine("Forced each area to always spawn a fishing bubble.");
         }
 
         private void InjectEasyFishing()
@@ -282,21 +261,14 @@ namespace Stardew_Injector
 
             if (!enabled) return;
 
-            MethodDefinition movementSpeedMethod = GetMethodDefinition(GetTypeDefinition("BobberBar"), "update");
-            //DumpInstructionsToFile(movementSpeedMethod);
+            this.m_vModDefinition.FindMethod("StardewValley.Menus.BobberBar::update")
+                .FindLoadConstant(694)
+                .Next(i => i.OpCode == OpCodes.Ldc_R4)
+                    .ReplaceCreate(OpCodes.Ldc_R4, 0.001f)
+                .Next(i => i.OpCode == OpCodes.Ldc_R4)
+                    .ReplaceCreate(OpCodes.Ldc_R4, 0.001f);
 
-            var ilProcessor = movementSpeedMethod.Body.GetILProcessor();
-            var firstInstruction = ilProcessor.Body.Instructions.First();
-            var lastInstruction = ilProcessor.Body.Instructions[ilProcessor.Body.Instructions.Count - 1];
-
-            ilProcessor.Replace(ilProcessor.Body.Instructions[907], ilProcessor.Create(OpCodes.Ldc_R4, 0.001f));
-            Console.WriteLine("Replaced line 907 with opcode ldc.r4 with a value of 0.001, Slows down fish escape for all bobbers");
-
-            ilProcessor.Replace(ilProcessor.Body.Instructions[909], ilProcessor.Create(OpCodes.Ldc_R4, 0.001f));
-            Console.WriteLine("Replaced line 909 with opcode ldc.r4 with a value of 0.001, Slows down fish escape for bobber id: 694");
-
-            for (int i = 0; i < ilProcessor.Body.Instructions.Count; i++)
-                Console.WriteLine(i + ":" + ilProcessor.Body.Instructions[i]);
+            Console.WriteLine("Replaced fish escape constants for all bobbers & bobber id 694 with 0.001, slowing it down.");
         }
 
         private void InjectClockScale()
@@ -315,44 +287,19 @@ namespace Stardew_Injector
 
             timeScale *= 1000;
 
-            MethodDefinition movementSpeedMethod = GetMethodDefinition(GetTypeDefinition("Game1"), "UpdateGameClock");
+            this.m_vModDefinition.FindMethod("StardewValley.Game1::UpdateGameClock")
+                .FindLoadConstant(7000f)
+                    .ReplaceCreate(OpCodes.Ldc_R4, timeScale * 1.0f)
+                .Next(i => i.OpCode == OpCodes.Ldc_R4 && (float)i.Operand == 7000f)
+                    .ReplaceCreate(OpCodes.Ldc_R4, timeScale * 1.0f)
+                .Next(i => i.OpCode == OpCodes.Ldc_I4 && (int)i.Operand == 7000)
+                    .ReplaceCreate(OpCodes.Ldc_I4, timeScale);
 
-            var ilProcessor = movementSpeedMethod.Body.GetILProcessor();
-            var firstInstruction = ilProcessor.Body.Instructions.First();
-            var lastInstruction = ilProcessor.Body.Instructions[ilProcessor.Body.Instructions.Count - 1];
-
-            ilProcessor.Replace(ilProcessor.Body.Instructions[42], ilProcessor.Create(OpCodes.Ldc_R4, timeScale * 1.0f));
-            Console.WriteLine("Replaced line 42 with opcode ldc.r4 with a value of {0}, Updates lighting for new time scale", timeScale);
-
-            ilProcessor.Replace(ilProcessor.Body.Instructions[89], ilProcessor.Create(OpCodes.Ldc_R4, timeScale * 1.0f));
-            Console.WriteLine("Replaced line 89 with opcode ldc.r4 with a value of {0}, Updates lighting for new time scale part 2", timeScale);
-
-            ilProcessor.Replace(ilProcessor.Body.Instructions[136], ilProcessor.Create(OpCodes.Ldc_I4, timeScale));
-            Console.WriteLine("Replaced line 136 with opcode ldc.i4 with a value of {0}, Updates lighting for new time scale part 2", timeScale);
-
-            for (int i = 0; i < ilProcessor.Body.Instructions.Count; i++)
-                Console.WriteLine(i + ":" + ilProcessor.Body.Instructions[i]);
+            Console.WriteLine("Updated lighting for new timescale ({0}).", timeScale);
         }
 
         private void InjectMovementSpeed()
         {
-            MethodDefinition movementSpeedMethod = GetMethodDefinition(GetTypeDefinition("Farmer"), "getMovementSpeed");
-
-            var ilProcessor = movementSpeedMethod.Body.GetILProcessor();
-            var firstInstruction = ilProcessor.Body.Instructions.First();
-            var lastInstruction = ilProcessor.Body.Instructions[ilProcessor.Body.Instructions.Count - 1];
-
-            //Basic pattern checking. Un-tested, patch could still break it!
-            for (int i = 0; i < ilProcessor.Body.Instructions.Count; i++)
-            {
-               if(ilProcessor.Body.Instructions[i].ToString().Contains("Enumerable"))
-               {
-                    //Next instruction
-                    ilProcessor.Replace(ilProcessor.Body.Instructions[i+1], ilProcessor.Create(OpCodes.Ldc_I4_4));
-                    Console.WriteLine("Replaced line " + i + "  with opcode ldc.i4.4, removing diagonal movement check");
-                }
-            }
-
             var speed = 1f;
             try
             {
@@ -363,20 +310,14 @@ namespace Stardew_Injector
                 // ignored
             }
 
-            Console.WriteLine("Modifying movement speed...Adding: " + speed + " to the total movement speed");
+            this.m_vModDefinition.FindMethod("StardewValley.Farmer::getMovementSpeed")
+                .FindLoadField("movementDirections").Next(i => i.OpCode == OpCodes.Ldc_I4_1)
+                    .ReplaceCreate(OpCodes.Ldc_I4_0)
+                .Last().CreateBefore(OpCodes.Ldc_R4, (float)speed).CreateAfter(OpCodes.Add);
 
-            ilProcessor.InsertBefore(lastInstruction, ilProcessor.Create(OpCodes.Ldc_R4, (float)speed));
-            ilProcessor.InsertBefore(lastInstruction, ilProcessor.Create(OpCodes.Add));
-
-            Console.WriteLine("");
-            Console.WriteLine("Finished modifiying: " + movementSpeedMethod.FullName);
-            Console.WriteLine("");
-            Console.WriteLine("Final value: ");
-            Console.WriteLine("");
-
-            for (int i = 0; i < ilProcessor.Body.Instructions.Count; i++)
-                Console.WriteLine(i + ":" + ilProcessor.Body.Instructions[i]);
+            Console.WriteLine("Removed diagonal movement check.");
         }
+
         private void DumpInstructionsToFile(MethodDefinition methodDefinition)
         {
             var fileName = string.Format("{0}.{1}.txt", methodDefinition.DeclaringType.Name, methodDefinition.Name);
