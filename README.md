@@ -15,5 +15,3 @@ Bugs:
 * May not work with some antiviruses
 * Button inputs(such as opening doors) may not work correctly? Some users are having problems
 * Some cutscenes may be broken
-
-If you are having problems try setting movementSpeed.txt to 0. This will set the game to default speed which should fix any bugs caused by incorrect movement speed.
