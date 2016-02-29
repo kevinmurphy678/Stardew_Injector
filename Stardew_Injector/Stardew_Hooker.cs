@@ -303,10 +303,16 @@ namespace Stardew_Injector
             var firstInstruction = ilProcessor.Body.Instructions.First();
             var lastInstruction = ilProcessor.Body.Instructions[ilProcessor.Body.Instructions.Count - 1];
 
-
-            //CAN CHANGE WHEN GAME IS UPDATED....MIGHT BREAK DURING NEXT UPDATE
-            ilProcessor.Replace(ilProcessor.Body.Instructions[23], ilProcessor.Create(OpCodes.Ldc_I4_4));
-            Console.WriteLine("Replaced line 23 with opcode ldc.i4.4, removing diagonal movement check");
+            //Basic pattern checking. Un-tested, patch could still break it!
+            for (int i = 0; i < ilProcessor.Body.Instructions.Count; i++)
+            {
+               if(ilProcessor.Body.Instructions[i].ToString().Contains("Enumerable"))
+               {
+                    //Next instruction
+                    ilProcessor.Replace(ilProcessor.Body.Instructions[i+1], ilProcessor.Create(OpCodes.Ldc_I4_4));
+                    Console.WriteLine("Replaced line " + i + "  with opcode ldc.i4.4, removing diagonal movement check");
+                }
+            }
 
             string text = System.IO.File.ReadAllText(@"movementSpeed.txt");
             int speed = Int32.Parse(text);
@@ -325,7 +331,6 @@ namespace Stardew_Injector
             for (int i = 0; i < ilProcessor.Body.Instructions.Count; i++)
                 Console.WriteLine(i + ":" + ilProcessor.Body.Instructions[i]);
         }
-
         private void DumpInstructionsToFile(MethodDefinition methodDefinition)
         {
             var fileName = string.Format("{0}.{1}.txt", methodDefinition.DeclaringType.Name, methodDefinition.Name);
