@@ -222,6 +222,37 @@ namespace Stardew_Injector
             InjectMovementSpeed();
             InjectClockScale();
             InjectEasyFishing();
+            InjectMoreBubbles();
+        }
+
+        private void InjectMoreBubbles()
+        {
+            MethodDefinition movementSpeedMethod = GetMethodDefinition(GetTypeDefinition("GameLocation"), "performTenMinuteUpdate");
+           // DumpInstructionsToFile(movementSpeedMethod);
+            var ilProcessor = movementSpeedMethod.Body.GetILProcessor();
+            bool changed = false;
+            for (int i = 0; i < ilProcessor.Body.Instructions.Count; i++)
+            {
+                var instruction = ilProcessor.Body.Instructions[i];
+                if(instruction.ToString().ToLower().Contains("nextdouble"))
+                {
+                    var start = ilProcessor.Body.Instructions.Skip(i);
+                    var end = start.Take(5);
+                    if(end.Any(ins => ins.ToString().ToLower().Contains("stardewvalley.farm")))
+                    {
+                        changed = true;
+                        ilProcessor.Replace(ilProcessor.Body.Instructions[i+1], ilProcessor.Create(OpCodes.Ldc_R8, 1.1));
+                        Console.WriteLine("Replacing line {0} with ldc.r8 1.1, forces each area to have a fishing bubble area", i + 1);
+                        break;
+                    }
+                }
+            }
+            if(!changed)
+            {
+                Console.WriteLine("Couldn't find il to change for fishing bubbles.");
+            }
+            for (int i = 0; i < ilProcessor.Body.Instructions.Count; i++)
+                Console.WriteLine(i + ":" + ilProcessor.Body.Instructions[i]);
         }
 
         private void InjectEasyFishing()
