@@ -3,6 +3,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -227,6 +228,18 @@ namespace Stardew_Injector
 
         private void InjectMoreBubbles()
         {
+            bool enabled = false;
+            try
+            {
+                enabled = bool.Parse(ConfigurationManager.AppSettings["EnableAlwaysSpawnFishingBubble"]);
+            }
+            catch
+            {
+                // ignored
+            }
+
+            if (!enabled) return;
+
             MethodDefinition movementSpeedMethod = GetMethodDefinition(GetTypeDefinition("GameLocation"), "performTenMinuteUpdate");
            // DumpInstructionsToFile(movementSpeedMethod);
             var ilProcessor = movementSpeedMethod.Body.GetILProcessor();
@@ -257,6 +270,18 @@ namespace Stardew_Injector
 
         private void InjectEasyFishing()
         {
+            bool enabled = false;
+            try
+            {
+                enabled = bool.Parse(ConfigurationManager.AppSettings["EnableEasyFishing"]);
+            }
+            catch
+            {
+                // ignored
+            }
+
+            if (!enabled) return;
+
             MethodDefinition movementSpeedMethod = GetMethodDefinition(GetTypeDefinition("BobberBar"), "update");
             //DumpInstructionsToFile(movementSpeedMethod);
 
@@ -276,20 +301,34 @@ namespace Stardew_Injector
 
         private void InjectClockScale()
         {
+            int timeScale = 7;
+            try
+            {
+                timeScale = int.Parse(ConfigurationManager.AppSettings["SecondsPerTenMinutes"]);
+            }
+            catch
+            {
+                // ignored
+            }
+
+            if (timeScale == 7) return;
+
+            timeScale *= 1000;
+
             MethodDefinition movementSpeedMethod = GetMethodDefinition(GetTypeDefinition("Game1"), "UpdateGameClock");
 
             var ilProcessor = movementSpeedMethod.Body.GetILProcessor();
             var firstInstruction = ilProcessor.Body.Instructions.First();
             var lastInstruction = ilProcessor.Body.Instructions[ilProcessor.Body.Instructions.Count - 1];
 
-            ilProcessor.Replace(ilProcessor.Body.Instructions[42], ilProcessor.Create(OpCodes.Ldc_R4, 14000f));
-            Console.WriteLine("Replaced line 42 with opcode ldc.r4 with a value of 14000, Updates lighting for new time scale");
+            ilProcessor.Replace(ilProcessor.Body.Instructions[42], ilProcessor.Create(OpCodes.Ldc_R4, timeScale * 1.0f));
+            Console.WriteLine("Replaced line 42 with opcode ldc.r4 with a value of {0}, Updates lighting for new time scale", timeScale);
 
-            ilProcessor.Replace(ilProcessor.Body.Instructions[89], ilProcessor.Create(OpCodes.Ldc_R4, 14000f));
-            Console.WriteLine("Replaced line 89 with opcode ldc.r4 with a value of 14000, Updates lighting for new time scale part 2");
+            ilProcessor.Replace(ilProcessor.Body.Instructions[89], ilProcessor.Create(OpCodes.Ldc_R4, timeScale * 1.0f));
+            Console.WriteLine("Replaced line 89 with opcode ldc.r4 with a value of {0}, Updates lighting for new time scale part 2", timeScale);
 
-            ilProcessor.Replace(ilProcessor.Body.Instructions[136], ilProcessor.Create(OpCodes.Ldc_I4, 14000));
-            Console.WriteLine("Replaced line 136 with opcode ldc.i4 with a value of 14000, Updates lighting for new time scale part 2");
+            ilProcessor.Replace(ilProcessor.Body.Instructions[136], ilProcessor.Create(OpCodes.Ldc_I4, timeScale));
+            Console.WriteLine("Replaced line 136 with opcode ldc.i4 with a value of {0}, Updates lighting for new time scale part 2", timeScale);
 
             for (int i = 0; i < ilProcessor.Body.Instructions.Count; i++)
                 Console.WriteLine(i + ":" + ilProcessor.Body.Instructions[i]);
@@ -314,8 +353,15 @@ namespace Stardew_Injector
                 }
             }
 
-            string text = System.IO.File.ReadAllText(@"movementSpeed.txt");
-            int speed = Int32.Parse(text);
+            var speed = 1;
+            try
+            {
+                speed = int.Parse(ConfigurationManager.AppSettings["RunSpeed"]);
+            }
+            catch
+            {
+                // ignored
+            }
 
             Console.WriteLine("Modifying movement speed...Adding: " + speed + " to the total movement speed");
 
