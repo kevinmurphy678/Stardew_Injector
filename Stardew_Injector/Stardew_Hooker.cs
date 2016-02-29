@@ -177,48 +177,48 @@ namespace Stardew_Injector
         public void ApplyHooks()
         {
             /*
-  Unused Hooks
+          Unused Hooks
 
-  MethodDefinition initMethod = GetMethodDefinition(GetTypeDefinition("Game1"), "Initialize");
-  var initProc = initMethod.Body.GetILProcessor();
-  initProc.InsertBefore(initMethod.Body.Instructions[0], initProc.Create(OpCodes.Call,
-      m_vModDefinition.ImportReference(typeof(Stardew_Hooker).GetMethod("PreInitialize", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
-      ));
+          MethodDefinition initMethod = GetMethodDefinition(GetTypeDefinition("Game1"), "Initialize");
+          var initProc = initMethod.Body.GetILProcessor();
+          initProc.InsertBefore(initMethod.Body.Instructions[0], initProc.Create(OpCodes.Call,
+              m_vModDefinition.ImportReference(typeof(Stardew_Hooker).GetMethod("PreInitialize", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
+              ));
 
-  initProc.InsertBefore(initMethod.Body.Instructions[initMethod.Body.Instructions.Count - 2], initProc.Create(OpCodes.Call,
-      m_vModDefinition.ImportReference(typeof(Stardew_Hooker).GetMethod("PostInitialize", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
-      ));
+          initProc.InsertBefore(initMethod.Body.Instructions[initMethod.Body.Instructions.Count - 2], initProc.Create(OpCodes.Call,
+              m_vModDefinition.ImportReference(typeof(Stardew_Hooker).GetMethod("PostInitialize", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
+              ));
 
-  MethodDefinition updateMethod = GetMethodDefinition(GetTypeDefinition("Game1"), "Update");
+          MethodDefinition updateMethod = GetMethodDefinition(GetTypeDefinition("Game1"), "Update");
 
-  var updateProc = updateMethod.Body.GetILProcessor();
+          var updateProc = updateMethod.Body.GetILProcessor();
 
-  var updateInst = updateMethod.Body.Instructions[0];
-  updateProc.InsertBefore(updateInst, updateProc.Create(OpCodes.Ldarg_1)); // push gameTime
-  updateProc.InsertBefore(updateInst, updateProc.Create(OpCodes.Call,
-      this.m_vModDefinition.ImportReference(typeof(Stardew_Hooker).GetMethod("PreUpdate", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
-      ));
+          var updateInst = updateMethod.Body.Instructions[0];
+          updateProc.InsertBefore(updateInst, updateProc.Create(OpCodes.Ldarg_1)); // push gameTime
+          updateProc.InsertBefore(updateInst, updateProc.Create(OpCodes.Call,
+              this.m_vModDefinition.ImportReference(typeof(Stardew_Hooker).GetMethod("PreUpdate", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
+              ));
 
-  updateProc.InsertBefore(updateMethod.Body.Instructions[updateMethod.Body.Instructions.Count - 1], updateProc.Create(OpCodes.Ldarg_1)); // push gameTime
-  updateProc.InsertBefore(updateMethod.Body.Instructions[updateMethod.Body.Instructions.Count - 1], updateProc.Create(OpCodes.Call,
-      this.m_vModDefinition.ImportReference(typeof(Stardew_Hooker).GetMethod("PostUpdate", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
-      ));
+          updateProc.InsertBefore(updateMethod.Body.Instructions[updateMethod.Body.Instructions.Count - 1], updateProc.Create(OpCodes.Ldarg_1)); // push gameTime
+          updateProc.InsertBefore(updateMethod.Body.Instructions[updateMethod.Body.Instructions.Count - 1], updateProc.Create(OpCodes.Call,
+              this.m_vModDefinition.ImportReference(typeof(Stardew_Hooker).GetMethod("PostUpdate", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
+              ));
 
-  MethodDefinition drawMethod = GetMethodDefinition(GetTypeDefinition("Game1"), "Draw");
+          MethodDefinition drawMethod = GetMethodDefinition(GetTypeDefinition("Game1"), "Draw");
 
-  var drawProc = drawMethod.Body.GetILProcessor();
-  var drawInst = drawMethod.Body.Instructions[0];
-  drawProc.InsertBefore(drawInst, drawProc.Create(OpCodes.Ldarg_1)); // push gameTime
-  drawProc.InsertBefore(drawInst, drawProc.Create(OpCodes.Call,
-      this.m_vModDefinition.ImportReference(typeof(Stardew_Hooker).GetMethod("PreDraw", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
-      ));
+          var drawProc = drawMethod.Body.GetILProcessor();
+          var drawInst = drawMethod.Body.Instructions[0];
+          drawProc.InsertBefore(drawInst, drawProc.Create(OpCodes.Ldarg_1)); // push gameTime
+          drawProc.InsertBefore(drawInst, drawProc.Create(OpCodes.Call,
+              this.m_vModDefinition.ImportReference(typeof(Stardew_Hooker).GetMethod("PreDraw", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
+              ));
 
-  drawProc.InsertBefore(drawMethod.Body.Instructions[drawMethod.Body.Instructions.Count - 1], drawProc.Create(OpCodes.Ldarg_1));
-  drawProc.InsertBefore(drawMethod.Body.Instructions[drawMethod.Body.Instructions.Count - 1], drawProc.Create(OpCodes.Call,
-      this.m_vModDefinition.ImportReference(typeof(Stardew_Hooker).GetMethod("PostDraw", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
-      ));
+          drawProc.InsertBefore(drawMethod.Body.Instructions[drawMethod.Body.Instructions.Count - 1], drawProc.Create(OpCodes.Ldarg_1));
+          drawProc.InsertBefore(drawMethod.Body.Instructions[drawMethod.Body.Instructions.Count - 1], drawProc.Create(OpCodes.Call,
+              this.m_vModDefinition.ImportReference(typeof(Stardew_Hooker).GetMethod("PostDraw", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
+              ));
 
-  */
+          */
 
             InjectMovementSpeed();
             InjectClockScale();
@@ -353,10 +353,10 @@ namespace Stardew_Injector
                 }
             }
 
-            var speed = 1;
+            var speed = 1f;
             try
             {
-                speed = int.Parse(ConfigurationManager.AppSettings["RunSpeed"]);
+                speed = float.Parse(ConfigurationManager.AppSettings["RunSpeed"]);
             }
             catch
             {
@@ -365,7 +365,7 @@ namespace Stardew_Injector
 
             Console.WriteLine("Modifying movement speed...Adding: " + speed + " to the total movement speed");
 
-            ilProcessor.InsertBefore(lastInstruction, ilProcessor.Create(OpCodes.Ldc_I4, speed));
+            ilProcessor.InsertBefore(lastInstruction, ilProcessor.Create(OpCodes.Ldc_R4, (float)speed));
             ilProcessor.InsertBefore(lastInstruction, ilProcessor.Create(OpCodes.Add));
 
             Console.WriteLine("");
