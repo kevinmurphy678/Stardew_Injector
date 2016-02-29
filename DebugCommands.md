@@ -1,3 +1,6 @@
+### List of debug commands (Access from in-game with F8)
+
+
 * deleteArch
 * save
 * removeLargeTF
