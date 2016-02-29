@@ -1,4 +1,4 @@
-### List of debug commands (Access from in-game with F8)
+### List of debug commands (Access from in-game with F8). More info [here](http://hastebin.com/olohamijuk.cs)
 
 
 * deleteArch
