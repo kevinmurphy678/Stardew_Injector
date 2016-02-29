@@ -1,5 +1,5 @@
 # Stardew_Injector
-Stardew  Valley Movement Speed Mod
+Stardew  Valley Patches / Tweaks
 
 * "Tweaks" diagonal movement
 * Increases movement speed .
