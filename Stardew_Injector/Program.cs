@@ -18,7 +18,7 @@ namespace Stardew_Injector
         {
             hooker.Initialize();
             hooker.ApplyHooks();
-            hooker.Finialize();
+            hooker.Finalize();
          
             hooker.Run();
             Console.ReadLine();

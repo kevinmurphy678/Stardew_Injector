@@ -156,5 +156,18 @@ namespace Stardew_Injector
 
             return currentType.Methods.FirstOrDefault(m => m.Name == nameSplit[1]);
         }
+
+        public static FieldDefinition FindField(this ModuleDefinition me, string name)
+        {
+            var nameSplit = name.Split(new string[] { "::" }, StringSplitOptions.RemoveEmptyEntries);
+            if (nameSplit.Length < 2)
+                throw new ArgumentException("Invalid field full name", "name");
+
+            var currentType = me.Types.FirstOrDefault(t => t.FullName == nameSplit[0]);
+            if (currentType == null)
+                return null;
+
+            return currentType.Fields.FirstOrDefault(m => m.Name == nameSplit[1]);
+        }
     }
 }
