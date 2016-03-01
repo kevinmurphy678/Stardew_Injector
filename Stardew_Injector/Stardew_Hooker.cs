@@ -77,6 +77,8 @@ namespace Stardew_Injector
 
             if (Config.EnableDebugMode)
                 InjectDebugMode();
+
+
         }
 
         private void InjectDebugMode()
@@ -127,13 +129,29 @@ namespace Stardew_Injector
 
         private void InjectMovementSpeed()
         {
-            this.m_vModDefinition.FindMethod("StardewValley.Farmer::getMovementSpeed")
-                .FindLoadField("movementDirections").Next(i => i.OpCode == OpCodes.Ldc_I4_1)
-                    .ReplaceCreate(OpCodes.Ldc_I4_0)
-                .Last().CreateBefore(OpCodes.Ldc_R4, (float)Config.RunSpeed).CreateAfter(OpCodes.Add);
+           
 
-            Console.WriteLine("Removed diagonal movement check.");
+            if(Config.EnableTweakedDiagonalMovement)
+            {
+                this.m_vModDefinition.FindMethod("StardewValley.Farmer::getMovementSpeed")
+               .FindLoadField("movementDirections").Next(i => i.OpCode == OpCodes.Ldc_I4_1)
+                   .ReplaceCreate(OpCodes.Ldc_I4_4);
+
+                Console.WriteLine("Removed diagonal movement check.");
+            }
+
+            if(Config.RunSpeed > 0)
+            {
+                this.m_vModDefinition.FindMethod("StardewValley.Farmer::getMovementSpeed")
+              .FindLoadField("movementDirections").Last().CreateBefore(OpCodes.Ldc_R4, (float)Config.RunSpeed).CreateAfter(OpCodes.Add);
+
+                Console.WriteLine("Added run speed: " + Config.RunSpeed);
+            }
+
+         
         }
+
+       
 
         private void DumpInstructionsToFile(MethodDefinition methodDefinition)
         {

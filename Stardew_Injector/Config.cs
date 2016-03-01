@@ -57,5 +57,16 @@ namespace Stardew_Injector
                 return val;
             }
         }
+
+        public static bool EnableTweakedDiagonalMovement
+        {
+            get
+            {
+                bool val = false;
+                bool.TryParse(ConfigurationManager.AppSettings["EnableTweakedDiagonalMovement"], out val);
+                return val;
+            }
+        }
+
     }
 }
