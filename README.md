@@ -1,4 +1,4 @@
-# Stardew_Injector
+# Stardew_Injector (obsolete, go to http://community.playstarbound.com/forums/mods.215/ for latest mods)
 Stardew  Valley Patches / Tweaks
 
 * "Tweaks" diagonal movement
